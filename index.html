@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreaded Pirates</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.counter-box {
+    margin-top: 20px;
+    font-family: "Courier New", monospace;
+    color: #00ffcc;
+    text-align: center;
+}
+
+.digital-counter {
+    font-size: 52px;
+    letter-spacing: 6px;
+    color: #00ffcc;
+    text-shadow: 0 0 10px #00ffcc, 0 0 20px #008877;
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border: 2px solid #00ffcc;
+    border-radius: 10px;
+    display: inline-block;
+    min-width: 160px;
+    animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px #00ffcc; }
+    to { box-shadow: 0 0 20px #00ffcc; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <div class="content">
+
+        <img src="logo.png" class="logo" alt="Dreaded Pirates">
+
+        <h1>Dreaded Pirates</h1>
+
+        <div class="counter-box">
+            You Are Now Part Of The Crew:<br>
+            <div class="digital-counter" id="count">0000</div>
+        </div>
+
+    </div>
+</div>
+
+<audio id="oceanAudio" autoplay loop>
+    <source src="ocean.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const WORKER_URL = "https://dreadedpirates.<your-subdomain>.workers.dev
+";
+
+async function updateCounter() {
+    try {
+        const res = await fetch(WORKER_URL);
+        const data = await res.json();
+
+        animateCounter(data.count);
+    } catch (err) {
+        console.error(err);
+        document.getElementById("count").textContent = "ERR";
+    }
+}
+
+function animateCounter(target) {
+    const el = document.getElementById("count");
+    let current = 0;
+
+    const interval = setInterval(() => {
+        current++;
+        el.textContent = String(current).padStart(4, "0");
+
+        if (current >= target) clearInterval(interval);
+    }, 10);
+}
+
+updateCounter();
+
+const audio = document.getElementById("oceanAudio");
+audio.volume = 0.5;
+
+audio.play().catch(() => {
+    document.body.addEventListener("click", () => audio.play(), { once: true });
+});
+</script>
+
+</body>
+</html>
