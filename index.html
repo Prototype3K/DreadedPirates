@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreaded Pirates</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="overlay">
+    <div class="content">
+        <img src="logo.png" alt="Dreaded Pirates Logo" class="logo">
+        <h1>Dreaded Pirates</h1>
+        <div class="counter-box">
+           You Are Now Part Of The Crew: <span id="count">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<audio id="oceanAudio" autoplay loop>
+    <source src="ocean.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const namespace = "dreadedpirates";
+const key = "website_visits";
+
+fetch(`https://api.countapi.xyz/hit/DreadedPirates/visitors`)
+  .then(response => response.json())
+  .then(data => {
+      document.getElementById("count").textContent = data.value;
+  })
+  .catch(() => {
+      document.getElementById("count").textContent = "Unavailable";
+  });
+
+const audio = document.getElementById("oceanAudio");
+audio.volume = 0.5;
+audio.play().catch(() => {
+    document.body.addEventListener("click", () => audio.play(), {once:true});
+});
+</script>
+</body>
+</html>
